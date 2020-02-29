@@ -1,5 +1,7 @@
 package com.havakirliligi;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Arrays;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -32,12 +34,19 @@ public class CsbService {
 		}));
 	}
 
-	public AirQualityStationDetail getHavaKirliligi(String stationId, int year, int month, int day, int hour) {
+	public AirQualityStationDetail getHavaKirliligi(String stationId) {
+
+		LocalDateTime now = LocalDateTime.now();
+
+		int year = now.getYear();
+		Month month = now.getMonth();
+		int dayOfMonth = now.getDayOfMonth();
+		int hour = now.getHour();
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		String body = String.format(BODY, stationId, year, month, day, hour);
+		String body = String.format(BODY, stationId, year, month.ordinal() + 1, dayOfMonth, hour);
 		HttpEntity<String> entity = new HttpEntity<String>(body, headers);
 
 		ResponseEntity<AirQualityStationDetail> result = restTemplate.postForEntity(URL, entity,
